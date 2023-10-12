@@ -2,6 +2,9 @@
   <div id="sidebarView">
     <div class="dnd-app">
       <div class="dnd-wrap" ref="dndW">
+        <div @mousedown="startDrag">
+          <TestComVue></TestComVue>
+        </div>
         <div type="rect" class="dnd-rect" @mousedown="startDrag($event)">
           Rect
         </div>
@@ -14,6 +17,10 @@
 </template>
 <script>
 import { Dnd } from "@antv/x6-plugin-dnd";
+import { graph } from "../X6";
+import { register, VueShapeView } from "@antv/x6-vue-shape";
+import TestComVue from "@/sideBarComList/TestCom.vue";
+
 export default {
   name: "SideBar",
   data() {
@@ -21,15 +28,20 @@ export default {
       dnd: null,
     };
   },
-  props: ["Graph"],
-  mounted() {
-    this.initDnd();
+  // provide() {
+  //   return {
+  //     getNode: () => "",
+  //     getGraph: () => graph,
+  //   };
+  // },
+  components: {
+    TestComVue,
   },
+  mounted() {},
   methods: {
     initDnd() {
-      console.log(this.$refs.dndW);
       this.dnd = new Dnd({
-        target: this.Graph,
+        target: graph,
         scaled: false,
         animation: true,
       });
@@ -37,37 +49,20 @@ export default {
     startDrag(e) {
       const target = e.target;
       const type = target.getAttribute("type");
-      const node =
-        type === "rect"
-          ? this.Graph.createNode({
-              width: 100,
-              height: 40,
-              label: "Rect",
-              attrs: {
-                body: {
-                  stroke: "#8f8f8f",
-                  strokeWidth: 1,
-                  fill: "#fff",
-                  rx: 6,
-                  ry: 6,
-                },
-              },
-            })
-          : this.Graph.createNode({
-              width: 70,
-              height: 60,
-              shape: "circle",
-              label: "Circle",
-              attrs: {
-                body: {
-                  stroke: "#8f8f8f",
-                  strokeWidth: 1,
-                  fill: "#fff",
-                },
-              },
-            });
-      // console.dir(this.dnd.start.toString());
-      // debugger;
+      register({
+        shape: "testcom",
+        width: 100,
+        height: 100,
+        component: TestComVue,
+      });
+      const node = graph.createNode({
+        width: 100,
+        height: 100,
+        shape: "testcom",
+        data: {
+          num: 0,
+        },
+      });
       this.dnd.start(node, e);
     },
   },

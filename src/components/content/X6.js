@@ -1,7 +1,8 @@
 import { Graph } from "@antv/x6";
+export let graph = null;
 export function initGraph(el) {
     // 基础配置
-    return new Graph({
+    graph = new Graph({
         container: el,
         autoResize: true,
         panning: {
@@ -38,7 +39,6 @@ export function initGraph(el) {
                     type: "gap",
                 },
             },
-            // allowBlank: false
         },
         grid: {
             visible: true,
@@ -48,4 +48,5 @@ export function initGraph(el) {
             color: "#fff", // 设置画布背景颜色
         },
     });
+    return graph;
 }
